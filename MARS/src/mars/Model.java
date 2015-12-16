@@ -4,16 +4,28 @@
  * and open the template in the editor.
  */
 package mars;
+
+import java.util.ArrayList;
+
 /**
  *5
  * @author hessel
  */
 public class Model {
     
-    private static final int[] xaxis = {};
-    private static final int[] yaxis = {};
+    private final int[] XAXIS = {};
+    private final int[] YAXIS = {};
+    private ArrayList<String> Formula; 
+    
     
     public Model(){
-        
+    }
+    
+    private double RSS(){
+        return 0;
+    }
+    
+    public ArrayList<String> ForwardPass(){
+        return new ArrayList<>();
     }
 }

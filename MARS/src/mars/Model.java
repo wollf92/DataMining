@@ -4,11 +4,16 @@
  * and open the template in the editor.
  */
 package mars;
-
 /**
  *
  * @author hessel
  */
 public class Model {
     
+    private static final int[] xaxis = {};
+    private static final int[] yaxis = {};
+    
+    public Model(){
+        
+    }
 }

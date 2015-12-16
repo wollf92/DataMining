@@ -9,6 +9,6 @@ package mars;
  *
  * @author hessel
  */
-public class Algorithm {
-    
+public class Controller {
+    //hoi
 }

@@ -35,11 +35,19 @@ public class Model {
     }
     
     public String ForwardPass(){
-        findIntercept();
+        GetIntercept();
+        RSS = ComputeRSS();
+        
         return Formula;
     }
     
-    private void findIntercept(){
+    private void GetIntercept(){
+        double ic = 0;
+        for(int i = 0; i < ARRAYLENGTH; i++){
+            ic += YAXIS[i];
+        }
+        ic = ic/(double)ARRAYLENGTH;
+        Formula = Double.toString(ic);
     }
     
     private double ComputeValue(int index){
@@ -52,14 +60,14 @@ public class Model {
                 for(; j < Formula.length() && !((b >= 65 && b <= 90) || (b >= 97 && b <= 122) || b == '-' || b == '+'); j++){
                     b = Formula.charAt(j);
                 }
-                coëfficients.add(getDouble(Formula.substring(i, j)));
+                coëfficients.add(StringtoDouble(Formula.substring(i, j)));
                 i = j - 1;
             }
         }
         return 0;
     }
     
-    private double getDouble(String s){
+    private double StringtoDouble(String s){
         
         return 0;
     }

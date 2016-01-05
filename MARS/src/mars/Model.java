@@ -64,11 +64,33 @@ public class Model {
                 i = j - 1;
             }
         }
-        return 0;
+        double result = coëfficients.get(0);
+        for(int i = 1; i < coëfficients.size(); i++){
+            result += coëfficients.get(i)*XAXIS[index];
+        }
+        return result;
     }
     
     private double StringtoDouble(String s){
-        
-        return 0;
+        boolean negative = false;
+        int dot = negative ? s.length()-1 : s.length();
+        ArrayList<Double> numbers = new ArrayList<>();
+        double result = 0;
+        for(int i = 0; i < s.length(); i++){
+            if(s.charAt(i) == '-')
+                negative = true;
+            else if(s.charAt(i) == '.'){
+                if(negative)
+                    dot = i - 1;
+                else
+                    dot = i;
+            }
+            else
+                numbers.add((double)(s.charAt(i) - 48));
+        }
+        for(int i = 0; i < numbers.size(); i++){
+            result += numbers.get(i)*Math.pow(10, dot - i - 1);
+        }
+        return negative ? -result : result;
     }
 }

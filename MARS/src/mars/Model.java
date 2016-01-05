@@ -15,9 +15,9 @@ public class Model {
     
     private final String XAXISNAME = "";
     private final int ARRAYLENGTH = 0;
-    private final int[] XAXIS = {};
-    private final int[] YAXIS = {};
-    private String Formula = "";
+    private final double[][] XAXIS = {{}};
+    private final double[] YAXIS = {};
+    private ArrayList<MARSTerm> Formula = new ArrayList<>();
     private double RSS;
     
     
@@ -34,7 +34,7 @@ public class Model {
         return sum;
     }
     
-    public String ForwardPass(){
+    public ArrayList<MARSTerm> ForwardPass(){
         GetIntercept();
         RSS = ComputeRSS();
         
@@ -47,28 +47,26 @@ public class Model {
             ic += YAXIS[i];
         }
         ic = ic/(double)ARRAYLENGTH;
-        Formula = Double.toString(ic);
+        Formula.add(new MARSTerm(ic));
     }
     
     private double ComputeValue(int index){
-        ArrayList<Double> coëfficients = new ArrayList<>();
-        for(int i = 0; i < Formula.length(); i++){
-            char a = Formula.charAt(i);
-            if(a == '-' || (a >= 48 && a <= 57)){
-                int j = i + 1;
-                char b = Formula.charAt(j);
-                for(; j < Formula.length() && !((b >= 65 && b <= 90) || (b >= 97 && b <= 122) || b == '-' || b == '+'); j++){
-                    b = Formula.charAt(j);
-                }
-                coëfficients.add(StringtoDouble(Formula.substring(i, j)));
-                i = j - 1;
-            }
-        }
-        double result = coëfficients.get(0);
-        for(int i = 1; i < coëfficients.size(); i++){
-            result += coëfficients.get(i)*XAXIS[index];
-        }
-        return result;
+       double result = 0;
+       for(MARSTerm cur : Formula){
+           if(cur.Knot.isEmpty())
+               result += cur.Coëff;
+           else{
+               double prod = 1;
+               for(int i = 0; i < cur.Knot.size(); i++){
+                   if(cur.NegHinge.get(i))
+                       prod *= Math.max(0,cur.Knot.get(i) - XAXIS[cur.VarRow.get(i)][index]);
+                   else
+                       prod *= Math.max(0,XAXIS[cur.VarRow.get(i)][index] - cur.Knot.get(i));
+               }
+               result += cur.Coëff*prod;
+           }
+       }
+       return result;
     }
     
     private double StringtoDouble(String s){

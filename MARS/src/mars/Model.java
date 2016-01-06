@@ -51,12 +51,33 @@ public class Model {
     }
     
     private void RemoveTerms(){
-        
+        double testGCV = 0;
+        MARSTerm removed = new MARSTerm(0);
+        while(testGCV < GCV){
+            removed = RemoveTerm();
+            testGCV = ComputeGCV(Formula);
+        }
+        if(removed.Coëff != 0)
+            Formula.add(removed);
     }
     
-    private double RemoveTerm (){
-        
-        return ComputeGCV(Formula);
+    private MARSTerm RemoveTerm (){
+        ArrayList<MARSTerm> testFormula = (ArrayList<MARSTerm>)Formula.clone();
+        MARSTerm removed = new MARSTerm(0);
+        double RSSdiff = RSS;
+        for(int i = 1; i < Formula.size(); i++){
+            MARSTerm remTest = testFormula.get(i);
+            testFormula.remove(i);
+            double testRSS = ComputeRSS(testFormula);
+            if(Math.abs(RSS - testRSS) < RSSdiff){
+                RSSdiff = Math.abs(RSS - testRSS);
+                removed = remTest;
+            }
+            testFormula.add(i,remTest);
+        }
+        if(Formula.remove(removed))
+            return removed;
+        return new MARSTerm(0);
     }
     
     public ArrayList<MARSTerm> ForwardPass(int maxTerms, int maxTermDepth){

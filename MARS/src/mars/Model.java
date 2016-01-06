@@ -21,8 +21,6 @@ import java.util.Map.Entry;
  * @author Hessel Bongers
  */
 public class Model {
-
-    
     
     private final String[] XAXISNAMES = {""};
     private final double[][] XAXIS = {{}};

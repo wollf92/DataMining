@@ -46,11 +46,12 @@ public class Model {
     
     public ArrayList<MARSTerm> BackwardPass(){
         GCV = ComputeGCV(Formula);
-        double newGCV = RemoveTerm();
-        while(newGCV < GCV){
-            
-        }
+        RemoveTerms();
         return Formula;
+    }
+    
+    private void RemoveTerms(){
+        
     }
     
     private double RemoveTerm (){

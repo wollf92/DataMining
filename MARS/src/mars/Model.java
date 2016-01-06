@@ -13,8 +13,7 @@ import java.util.ArrayList;
  */
 public class Model {
     
-    private final String XAXISNAME = "";
-    private final int ARRAYLENGTH = 0;
+    private final String[] XAXISNAMES = {""};
     private final double[][] XAXIS = {{}};
     private final double[] YAXIS = {};
     private ArrayList<MARSTerm> Formula = new ArrayList<>();
@@ -26,47 +25,54 @@ public class Model {
     
     private double ComputeRSS(){
         double sum = 0;
-        for(int i = 0; i < ARRAYLENGTH; i++){
+        for(int i = 0; i < YAXIS.length; i++){
             double residu = ComputeValue(i) - YAXIS[i];
             sum += residu * residu;
         }
-        sum = sum/(double)ARRAYLENGTH;
+        sum = sum/(double)YAXIS.length;
         return sum;
     }
     
-    public ArrayList<MARSTerm> ForwardPass(){
+    public ArrayList<MARSTerm> ForwardPass(int maxTerms, int maxTermDepth){
         GetIntercept();
         RSS = ComputeRSS();
-        
+        while(Formula.size() < maxTerms){
+            FindNextPair(maxTermDepth);
+        }
         return Formula;
     }
     
     private void GetIntercept(){
         double ic = 0;
-        for(int i = 0; i < ARRAYLENGTH; i++){
+        for(int i = 0; i < YAXIS.length; i++){
             ic += YAXIS[i];
         }
-        ic = ic/(double)ARRAYLENGTH;
+        ic = ic/(double)YAXIS.length;
         Formula.add(new MARSTerm(ic));
+    }
+    
+    private void FindNextPair(int maxTermDepth){
+        for(MARSTerm parent : Formula){
+            for(int i = 0; i < XAXISNAMES.length; i++){
+                for(double knot : XAXIS[i]){
+                    
+                }
+            }
+        }
     }
     
     private double ComputeValue(int index){
        double result = 0;
        for(MARSTerm cur : Formula){
-           if(cur.Knot.isEmpty())
-               result += cur.Coëff;
-           else{
-               double prod = 1;
-               for(int i = 0; i < cur.Knot.size(); i++){
-                   if(cur.NegHinge.get(i))
-                       prod *= Math.max(0,cur.Knot.get(i) - XAXIS[cur.VarRow.get(i)][index]);
-                   else
-                       prod *= Math.max(0,XAXIS[cur.VarRow.get(i)][index] - cur.Knot.get(i));
-               }
-               result += cur.Coëff*prod;
-           }
+           result += cur.ComputeTermValue(index, XAXIS);
        }
        return result;
+    }
+    
+    public <T>void CopyList(ArrayList<T> a, ArrayList<T> b){
+        for(T cur : a){
+            b.add(cur);
+        }
     }
     
     private double StringtoDouble(String s){

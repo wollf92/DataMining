@@ -24,4 +24,21 @@ public class MARSTerm {
         Knot = new ArrayList<>();
         VarRow = new ArrayList<>();
     }
+    
+    public double ComputeTermValue(int index, double[][] XAXIS){
+        double result = 0;
+        if(Knot.isEmpty())
+            result += Coëff;
+        else{
+            double prod = 1;
+            for(int i = 0; i < Knot.size(); i++){
+                if(NegHinge.get(i))
+                    prod *= Math.max(0,Knot.get(i) - XAXIS[VarRow.get(i)][index]);
+                else
+                    prod *= Math.max(0,XAXIS[VarRow.get(i)][index] - Knot.get(i));
+            }
+            result += Coëff*prod;
+        }
+        return result;
+    }
 }

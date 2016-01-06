@@ -23,10 +23,10 @@ public class Model {
     public Model(){
     }
     
-    private double ComputeRSS(){
+    private double ComputeRSS(ArrayList<MARSTerm> form){
         double sum = 0;
         for(int i = 0; i < YAXIS.length; i++){
-            double residu = ComputeValue(i) - YAXIS[i];
+            double residu = ComputeValue(form, i) - YAXIS[i];
             sum += residu * residu;
         }
         sum = sum/(double)YAXIS.length;
@@ -35,7 +35,7 @@ public class Model {
     
     public ArrayList<MARSTerm> ForwardPass(int maxTerms, int maxTermDepth){
         GetIntercept();
-        RSS = ComputeRSS();
+        RSS = ComputeRSS(Formula);
         while(Formula.size() < maxTerms){
             FindNextPair(maxTermDepth);
         }
@@ -52,18 +52,69 @@ public class Model {
     }
     
     private void FindNextPair(int maxTermDepth){
+        ArrayList<MARSTerm> best = new ArrayList<>();
         for(MARSTerm parent : Formula){
             for(int i = 0; i < XAXISNAMES.length; i++){
                 for(double knot : XAXIS[i]){
-                    
+                    double x = TryHingePair(parent, knot, i);
+                    if(x < RSS){
+                        RSS = x;
+                        best = (ArrayList<MARSTerm>)Formula.clone();
+                    }
+                    Formula.remove(Formula.size()-1);
+                    Formula.remove(Formula.size()-1);
                 }
             }
         }
+        Formula = (ArrayList<MARSTerm>)best.clone();
     }
     
-    private double ComputeValue(int index){
+    private double TryHingePair(MARSTerm parent, double knot, int xrow){
+        MARSTerm new1 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, false));
+        CopyList(parent.NegHinge, new1.NegHinge);
+        new1.NegHinge.add(false);
+        CopyList(parent.Knot, new1.Knot);
+        new1.Knot.add(knot);
+        CopyList(parent.VarRow, new1.VarRow);
+        new1.VarRow.add(xrow);
+        Formula.add(new1);
+        
+        MARSTerm new2 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, true));
+        CopyList(parent.NegHinge, new2.NegHinge);
+        new2.NegHinge.add(true);
+        CopyList(parent.Knot, new2.Knot);
+        new2.Knot.add(knot);
+        CopyList(parent.VarRow, new2.VarRow);
+        new2.VarRow.add(xrow);
+        Formula.add(new2);
+        
+        return ComputeRSS(Formula);
+    }
+    
+    private double ComputeCoëff(double y, double x, int xrow, boolean neg){
+        double lower = 0;
+        double upper = 0;
+        for(int i = 0; i < XAXIS[xrow].length; i++){
+            double a;
+            double b;
+            if(neg)
+                a = x - XAXIS[xrow][i];
+            else
+                a = XAXIS[xrow][i] - x;
+            for(int j = 0; j < YAXIS.length; j++){
+                b = YAXIS[j] - y;
+                upper += a*b;
+            }
+            lower += a*a;
+        }
+        upper = upper/(double)(XAXIS[xrow].length*YAXIS.length);
+        lower = lower/(double)(XAXIS[xrow].length*XAXIS[xrow].length);
+        return upper/lower;
+    }
+    
+    private double ComputeValue(ArrayList<MARSTerm> form, int index){
        double result = 0;
-       for(MARSTerm cur : Formula){
+       for(MARSTerm cur : form){
            result += cur.ComputeTermValue(index, XAXIS);
        }
        return result;

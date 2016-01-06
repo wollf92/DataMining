@@ -5,16 +5,24 @@
  */
 package mars;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Hessel Bongers
  */
 public class Model {
 
-    static void setFileToReadDataFrom(String text) {
-        
-    }
+    
     
     private final String[] XAXISNAMES = {""};
     private final double[][] XAXIS = {{}};
@@ -22,9 +30,50 @@ public class Model {
     private ArrayList<MARSTerm> Formula = new ArrayList<>();
     private double RSS;
     private double GCV;
+    private HashMap<String, List<Double>> instanceValues;
     
     
     public Model(){
+    }
+    
+    public void setFileToReadDataFrom(String text) throws FileNotFoundException, IOException {
+        String line;
+        BufferedReader br;
+        br = new BufferedReader(new FileReader("src/mars/" + text + ".csv"));
+        instanceValues = new HashMap<String, List<Double>>();
+        while((line = br.readLine()) != null)
+        {
+            String[] perValue = line.split(",");
+            String date = perValue[1] + "-" + perValue[5];
+            instanceValues.put(date, new ArrayList<Double>());
+            instanceValues.get(date).add((double)perValue[0].length());
+            for(int i = 2; i <= 15; i++)
+            {
+                try{
+                    instanceValues.get(date).add(Double.parseDouble(perValue[i]));
+                } catch (NumberFormatException e) {}
+            }
+        }    
+        printData();
+        System.out.println(getDataFromDate("2011-04-15 5"));
+    }
+    
+    public List<Double> getDataFromDate(String date)
+    {
+        return instanceValues.get(date);
+    }
+    
+    public void printData()
+    {
+        Iterator<Entry<String, List<Double>>> it = instanceValues.entrySet().iterator();
+        String line;
+        while(it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            line = (String)pair.getKey();
+            for(double d : (List<Double>)pair.getValue())
+                line = line + " " + d;
+            System.out.println(line);
+        }
     }
     
     private double ComputeRSS(ArrayList<MARSTerm> form){

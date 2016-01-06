@@ -30,6 +30,8 @@ public class Model {
     private double GCV;
     private HashMap<String, List<Double>> instanceValues;
     
+    private static final int VARIABLE_COUNT = 14;
+    private static final int INDEX_RESPONSE = 14;
     
     public Model(){
     }

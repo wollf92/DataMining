@@ -8,8 +8,7 @@ package mars;
 import java.util.ArrayList;
 
 /**
- *5
- * @author hessel
+ * @author Hessel Bongers
  */
 public class Model {
     
@@ -18,6 +17,7 @@ public class Model {
     private final double[] YAXIS = {};
     private ArrayList<MARSTerm> Formula = new ArrayList<>();
     private double RSS;
+    private double GCV;
     
     
     public Model(){
@@ -31,6 +31,27 @@ public class Model {
         }
         sum = sum/(double)YAXIS.length;
         return sum;
+    }
+    
+    private double ComputeGCV(ArrayList<MARSTerm> form){
+        double amtOfTerms = form.size() + 2*(form.size()-1)/2;
+        double lower = (1 - amtOfTerms/(double)YAXIS.length);
+        lower = YAXIS.length*lower*lower;
+        return RSS/lower;
+    }
+    
+    public ArrayList<MARSTerm> BackwardPass(){
+        GCV = ComputeGCV(Formula);
+        double newGCV = RemoveTerm();
+        while(newGCV < GCV){
+            
+        }
+        return Formula;
+    }
+    
+    private double RemoveTerm (){
+        
+        return ComputeGCV(Formula);
     }
     
     public ArrayList<MARSTerm> ForwardPass(int maxTerms, int maxTermDepth){
@@ -54,7 +75,7 @@ public class Model {
     private void FindNextPair(int maxTermDepth){
         ArrayList<MARSTerm> best = new ArrayList<>();
         for(MARSTerm parent : Formula){
-            for(int i = 0; i < XAXISNAMES.length; i++){
+            for(int i = 0; i < XAXISNAMES.length && parent.Knot.size() < maxTermDepth; i++){
                 for(double knot : XAXIS[i]){
                     double x = TryHingePair(parent, knot, i);
                     if(x < RSS){

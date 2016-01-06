@@ -11,6 +11,10 @@ import java.util.ArrayList;
  * @author Hessel Bongers
  */
 public class Model {
+
+    static void setFileToReadDataFrom(String text) {
+        
+    }
     
     private final String[] XAXISNAMES = {""};
     private final double[][] XAXIS = {{}};

@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +28,7 @@ public class Model {
     private ArrayList<MARSTerm> Formula = new ArrayList<>();
     private double RSS;
     private double GCV;
-    private HashMap<String, List<Double>> instanceValues;
+    private HashMap<String, List<Double>> InstanceValues;
     
     private static final int VARIABLE_COUNT = 14;
     private static final int INDEX_RESPONSE = 14;
@@ -40,17 +40,17 @@ public class Model {
         String line;
         BufferedReader br;
         br = new BufferedReader(new FileReader("src/mars/" + text + ".csv"));
-        instanceValues = new HashMap<String, List<Double>>();
+        InstanceValues = new HashMap<String, List<Double>>();
         while((line = br.readLine()) != null)
         {
             String[] perValue = line.split(",");
             String date = perValue[1] + "-" + perValue[5];
-            instanceValues.put(date, new ArrayList<Double>());
-            instanceValues.get(date).add((double)perValue[0].length());
+            InstanceValues.put(date, new ArrayList<Double>());
+            InstanceValues.get(date).add((double)perValue[0].length());
             for(int i = 2; i <= 15; i++)
             {
                 try{
-                    instanceValues.get(date).add(Double.parseDouble(perValue[i]));
+                    InstanceValues.get(date).add(Double.parseDouble(perValue[i]));
                 } catch (NumberFormatException e) {}
             }
         }    
@@ -60,12 +60,12 @@ public class Model {
     
     public List<Double> getDataFromDate(String date)
     {
-        return instanceValues.get(date);
+        return InstanceValues.get(date);
     }
     
     public void printData()
     {
-        Iterator<Entry<String, List<Double>>> it = instanceValues.entrySet().iterator();
+        Iterator<Entry<String, List<Double>>> it = InstanceValues.entrySet().iterator();
         String line;
         while(it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
@@ -77,19 +77,21 @@ public class Model {
     }
     
     private double ComputeRSS(ArrayList<MARSTerm> form){
+        Iterator<List<Double>> it = InstanceValues.values().iterator();
         double sum = 0;
-        for(int i = 0; i < YAXIS.length; i++){
-            double residu = ComputeValue(form, i) - YAXIS[i];
+        while(it.hasNext()){
+            List<Double> instance = it.next();
+            double residu = ComputeValue(form, instance) - instance.get(INDEX_RESPONSE);
             sum += residu * residu;
         }
-        sum = sum/(double)YAXIS.length;
+        sum = sum/(double)InstanceValues.size();
         return sum;
     }
     
     private double ComputeGCV(ArrayList<MARSTerm> form){
         double amtOfTerms = form.size() + 2*(form.size()-1)/2;
-        double lower = (1 - amtOfTerms/(double)YAXIS.length);
-        lower = YAXIS.length*lower*lower;
+        double lower = (1 - amtOfTerms/(double)InstanceValues.size());
+        lower = (double)InstanceValues.size()*lower*lower;
         return RSS/lower;
     }
     
@@ -149,10 +151,12 @@ public class Model {
     
     private void FindNextPair(int maxTermDepth){
         ArrayList<MARSTerm> best = new ArrayList<>();
+        Iterator<List<Double>> it = InstanceValues.values().iterator();
         for(MARSTerm parent : Formula){
-            for(int i = 0; i < XAXISNAMES.length && parent.Knot.size() < maxTermDepth; i++){
-                for(double knot : XAXIS[i]){
-                    double x = TryHingePair(parent, knot, i);
+            for(int i = 0; i < VARIABLE_COUNT && parent.Knot.size() < maxTermDepth; i++){
+                while(it.hasNext()){
+                    List<Double> instance = it.next();
+                    double x = TryHingePair(parent, instance, i);
                     if(x < RSS){
                         RSS = x;
                         best = (ArrayList<MARSTerm>)Formula.clone();
@@ -165,7 +169,9 @@ public class Model {
         Formula = (ArrayList<MARSTerm>)best.clone();
     }
     
-    private double TryHingePair(MARSTerm parent, double knot, int xrow){
+    private double TryHingePair(MARSTerm parent, List<Double> instance, int xrow){
+        double knot = instance.get(xrow);
+        
         MARSTerm new1 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, false));
         CopyList(parent.NegHinge, new1.NegHinge);
         new1.NegHinge.add(false);
@@ -190,28 +196,29 @@ public class Model {
     private double ComputeCoëff(double y, double x, int xrow, boolean neg){
         double lower = 0;
         double upper = 0;
-        for(int i = 0; i < XAXIS[xrow].length; i++){
+        int instAmt = InstanceValues.size();
+        for(int i = 0; i < instAmt; i++){
             double a;
             double b;
             if(neg)
                 a = x - XAXIS[xrow][i];
             else
                 a = XAXIS[xrow][i] - x;
-            for(int j = 0; j < YAXIS.length; j++){
+            for(int j = 0; j < instAmt; j++){
                 b = YAXIS[j] - y;
                 upper += a*b;
             }
             lower += a*a;
         }
-        upper = upper/(double)(XAXIS[xrow].length*YAXIS.length);
-        lower = lower/(double)(XAXIS[xrow].length*XAXIS[xrow].length);
+        upper = upper/(double)(instAmt*instAmt);
+        lower = lower/(double)(instAmt*instAmt);
         return upper/lower;
     }
     
-    private double ComputeValue(ArrayList<MARSTerm> form, int index){
+    private double ComputeValue(ArrayList<MARSTerm> form, List<Double> instance){
        double result = 0;
        for(MARSTerm cur : form){
-           result += cur.ComputeTermValue(index, XAXIS);
+           result += cur.ComputeTermValue(instance);
        }
        return result;
     }

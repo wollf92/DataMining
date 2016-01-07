@@ -6,6 +6,7 @@
 package mars;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -25,7 +26,7 @@ public class MARSTerm {
         VarRow = new ArrayList<>();
     }
     
-    public double ComputeTermValue(int index, double[][] XAXIS){
+    public double ComputeTermValue(List<Double> instance){
         double result = 0;
         if(Knot.isEmpty())
             result += Coëff;
@@ -33,9 +34,9 @@ public class MARSTerm {
             double prod = 1;
             for(int i = 0; i < Knot.size(); i++){
                 if(NegHinge.get(i))
-                    prod *= Math.max(0,Knot.get(i) - XAXIS[VarRow.get(i)][index]);
+                    prod *= Math.max(0,Knot.get(i) - instance.get(VarRow.get(i)));
                 else
-                    prod *= Math.max(0,XAXIS[VarRow.get(i)][index] - Knot.get(i));
+                    prod *= Math.max(0,instance.get(VarRow.get(i)) - Knot.get(i));
             }
             result += Coëff*prod;
         }

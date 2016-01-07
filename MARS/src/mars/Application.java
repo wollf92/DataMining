@@ -5,12 +5,17 @@
  */
 package mars;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
  *
  * @author s4647416
  */
 public class Application extends javax.swing.JFrame {
 
+    private Model model = new Model();
+    
     /**
      * Creates new form Application
      */
@@ -90,7 +95,9 @@ public class Application extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void readFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readFileActionPerformed
-        Model.setFileToReadDataFrom(textFieldFile.getText());
+        try{
+        model.setFileToReadDataFrom(textFieldFile.getText());
+        } catch(FileNotFoundException e){} catch(IOException e){}
     }//GEN-LAST:event_readFileActionPerformed
 
     private void textFieldFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldFileActionPerformed

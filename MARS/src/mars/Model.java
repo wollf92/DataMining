@@ -40,7 +40,7 @@ public class Model {
         String line;
         BufferedReader br;
         br = new BufferedReader(new FileReader("src/mars/" + text + ".csv"));
-        InstanceValues = new HashMap<String, List<Double>>();
+        InstanceValues = new HashMap<>();
         while((line = br.readLine()) != null)
         {
             String[] perValue = line.split(",");
@@ -79,8 +79,7 @@ public class Model {
     private double ComputeRSS(ArrayList<MARSTerm> form){
         Iterator<List<Double>> it = InstanceValues.values().iterator();
         double sum = 0;
-        while(it.hasNext()){
-            List<Double> instance = it.next();
+        for(List<Double> instance : InstanceValues.values()){
             double residu = ComputeValue(form, instance) - instance.get(INDEX_RESPONSE);
             sum += residu * residu;
         }
@@ -142,10 +141,10 @@ public class Model {
     
     private void GetIntercept(){
         double ic = 0;
-        for(int i = 0; i < YAXIS.length; i++){
-            ic += YAXIS[i];
+        for(List<Double> instance : InstanceValues.values()){
+            ic += instance.get(INDEX_RESPONSE);
         }
-        ic = ic/(double)YAXIS.length;
+        ic = ic/(double)InstanceValues.size();
         Formula.add(new MARSTerm(ic));
     }
     
@@ -197,15 +196,15 @@ public class Model {
         double lower = 0;
         double upper = 0;
         int instAmt = InstanceValues.size();
-        for(int i = 0; i < instAmt; i++){
+        for(List<Double> inst : InstanceValues.values()){
             double a;
             double b;
             if(neg)
-                a = x - XAXIS[xrow][i];
+                a = x - inst.get(xrow);
             else
-                a = XAXIS[xrow][i] - x;
-            for(int j = 0; j < instAmt; j++){
-                b = YAXIS[j] - y;
+                a = inst.get(xrow) - x;
+            for(List<Double> inst2 : InstanceValues.values()){
+                b = inst2.get(INDEX_RESPONSE) - y;
                 upper += a*b;
             }
             lower += a*a;

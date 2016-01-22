@@ -42,4 +42,11 @@ public class MARSTerm {
         }
         return result;
     }
+    
+    @Override
+    public String toString(){
+        String s = "";
+        s += Double.toString(Coëff) + "*";
+        return s;
+    }
 }

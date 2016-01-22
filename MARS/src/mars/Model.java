@@ -130,7 +130,7 @@ public class Model {
     
     private void RemoveTerms(){
         double testGCV = 0;
-        MARSTerm removed = new MARSTerm(0);
+        MARSTerm removed = new MARSTerm(0, dataNames);
         while(testGCV < GCV){
             removed = RemoveTerm();
             testGCV = ComputeGCV(Formula);
@@ -141,7 +141,7 @@ public class Model {
     
     private MARSTerm RemoveTerm (){
         ArrayList<MARSTerm> testFormula = (ArrayList<MARSTerm>)Formula.clone();
-        MARSTerm removed = new MARSTerm(0);
+        MARSTerm removed = new MARSTerm(0, dataNames);
         double RSSdiff = RSS;
         for(int i = 1; i < Formula.size(); i++){
             MARSTerm remTest = testFormula.get(i);
@@ -155,7 +155,7 @@ public class Model {
         }
         if(Formula.remove(removed))
             return removed;
-        return new MARSTerm(0);
+        return new MARSTerm(0, dataNames);
     }
     
     public void ForwardPass(){
@@ -180,7 +180,7 @@ public class Model {
                 }
         }
         ic = ic/(double)InstanceValues.size();
-        Formula.add(new MARSTerm(ic));
+        Formula.add(new MARSTerm(ic, dataNames));
     }
     
     private void FindNextPair(){
@@ -206,7 +206,7 @@ public class Model {
     private double TryHingePair(MARSTerm parent, List<Double> instance, int xrow){
         double knot = instance.get(xrow);
         
-        MARSTerm new1 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, false));
+        MARSTerm new1 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, false), dataNames);
         CopyList(parent.NegHinge, new1.NegHinge);
         new1.NegHinge.add(false);
         CopyList(parent.Knot, new1.Knot);
@@ -215,7 +215,7 @@ public class Model {
         new1.VarRow.add(xrow);
         Formula.add(new1);
         
-        MARSTerm new2 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, true));
+        MARSTerm new2 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, true), dataNames);
         CopyList(parent.NegHinge, new2.NegHinge);
         new2.NegHinge.add(true);
         CopyList(parent.Knot, new2.Knot);

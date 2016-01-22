@@ -14,16 +14,18 @@ import java.util.List;
  */
 public class MARSTerm {
     
+    private String[] dataNames;
     public double Coëff;
     public ArrayList<Double> Knot;
     public ArrayList<Integer> VarRow;
     public ArrayList<Boolean> NegHinge;
     
-    public MARSTerm(double c){
+    public MARSTerm(double c, String[] dn){
         Coëff = c;
         NegHinge = new ArrayList<>();
         Knot = new ArrayList<>();
         VarRow = new ArrayList<>();
+        dataNames = dn;
     }
     
     public double ComputeTermValue(List<Double> instance){
@@ -46,7 +48,14 @@ public class MARSTerm {
     @Override
     public String toString(){
         String s = "";
-        s += Double.toString(Coëff) + "*";
+        s += Double.toString(Coëff);
+        for(int i = 0; i < Knot.size(); i++){
+            if(NegHinge.get(i)){
+                s += "*" + "max(0," + Double.toString(Knot.get(i)) + "-" + dataNames[VarRow.get(i)] + ")";
+            }
+            else
+                s += "*" + "max(0," + dataNames[VarRow.get(i)] + "-" + Double.toString(Knot.get(i)) + ")";
+        }
         return s;
     }
 }

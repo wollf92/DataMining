@@ -95,6 +95,12 @@ public class Model {
         }
     }
     
+    public ArrayList<MARSTerm> CalculateFormula(){
+        ForwardPass();
+        BackwardPass();
+        return Formula;
+    }
+    
     private double ComputeRSS(ArrayList<MARSTerm> form){
         Iterator<List<Double>> it = InstanceValues.values().iterator();
         double sum = 0;
@@ -113,10 +119,9 @@ public class Model {
         return RSS/lower;
     }
     
-    public ArrayList<MARSTerm> BackwardPass(){
+    public void BackwardPass(){
         GCV = ComputeGCV(Formula);
         RemoveTerms();
-        return Formula;
     }
     
     private void RemoveTerms(){
@@ -149,13 +154,12 @@ public class Model {
         return new MARSTerm(0);
     }
     
-    public ArrayList<MARSTerm> ForwardPass(){
+    public void ForwardPass(){
         GetIntercept();
         RSS = ComputeRSS(Formula);
         while(Formula.size() < MaxTerms){
             FindNextPair();
         }
-        return Formula;
     }
     
     private void GetIntercept(){

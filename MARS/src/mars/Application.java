@@ -210,7 +210,7 @@ public class Application extends javax.swing.JFrame {
     }//GEN-LAST:event_readFileActionPerformed
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
-        this.fileToReadFrom = ((JSlider)(evt.getSource())).getValue() == 0 ? "hour" : "day";
+        this.fileToReadFrom = ((JSlider)(evt.getSource())).getValue() == 0 ? "hour" : "shortList";
     }//GEN-LAST:event_jSlider1StateChanged
 
     private void inputMaxTermsCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_inputMaxTermsCaretUpdate

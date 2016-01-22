@@ -189,10 +189,11 @@ public class Model {
         ArrayList<MARSTerm> form = new ArrayList<>();
         copy(Formula, form);
         ArrayList<MARSTerm> best = new ArrayList<>();
-        Iterator<List<Double>> it = InstanceValues.values().iterator();
+        Iterator<List<Double>> it;
         for(MARSTerm parent : Formula){
             System.out.println(parent.toString());
             for(int i = 0; i < VARIABLE_COUNT && parent.Knot.size() < MaxTermDepth; i++){
+                it = InstanceValues.values().iterator();
                 while(it.hasNext()){
                     List<Double> instance = it.next();
                     double x = TryHingePair(parent, instance, i, form);
@@ -236,7 +237,7 @@ public class Model {
         new2.VarRow.add(xrow);
         form.add(new2);
         
-        return ComputeRSS(Formula);
+        return ComputeRSS(form);
     }
     
     private double ComputeCoëff(double y, double x, int xrow, boolean neg){

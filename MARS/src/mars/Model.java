@@ -250,14 +250,12 @@ public class Model {
                 a = x - inst.get(xrow);
             else
                 a = inst.get(xrow) - x;
-            for(List<Double> inst2 : InstanceValues.values()){
-                b = inst2.get(INDEX_RESPONSE) - y;
-                upper += a*b;
-            }
+            b = inst.get(INDEX_RESPONSE) - y;
+            upper += a*b;
             lower += a*a;
         }
-        upper = upper/(double)(instAmt*instAmt);
-        lower = lower/(double)(instAmt*instAmt);
+        upper = upper/(double)(instAmt);
+        lower = lower/(double)(instAmt);
         return upper/lower;
     }
     

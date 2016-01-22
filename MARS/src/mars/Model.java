@@ -195,10 +195,15 @@ public class Model {
                         RSS = x;
                         best = (ArrayList<MARSTerm>)Formula.clone();
                     }
+                    System.out.println(parent.toString());
                     Formula.remove(Formula.size()-1);
                     Formula.remove(Formula.size()-1);
                 }
             }
+        }
+        for(MARSTerm mars : best)
+        {
+            System.out.println(mars.toString());
         }
         Formula = (ArrayList<MARSTerm>)best.clone();
     }

@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 public class Application extends javax.swing.JFrame {
 
     private Model model = new Model();
-    private String fileToReadFrom;
+    private String fileToReadFrom = "day";
     
     /**
      * Creates new form Application
@@ -199,15 +199,18 @@ public class Application extends javax.swing.JFrame {
 
     private void readFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readFileActionPerformed
         try{
-        model.setFileToReadDataFrom(fileToReadFrom);
-        } catch(FileNotFoundException e){} catch(IOException e){}
+            model.setFileToReadDataFrom(fileToReadFrom);
+        } catch(FileNotFoundException e){System.out.println("filenotfound");} catch(IOException e){}
+
+        model.CalculateFormula();
         ArrayList formula;
         formula = model.getFormula();
-        jLabel2.setText(formula.toString());
+        System.out.println(formula.size());
+        System.out.println(formula.get(0).toString());
     }//GEN-LAST:event_readFileActionPerformed
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
-        this.fileToReadFrom = ((JSlider)(evt.getSource())).getValue() == 0 ? "day.csv" : "hour.csv";
+        this.fileToReadFrom = ((JSlider)(evt.getSource())).getValue() == 0 ? "hour" : "day";
     }//GEN-LAST:event_jSlider1StateChanged
 
     private void inputMaxTermsCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_inputMaxTermsCaretUpdate

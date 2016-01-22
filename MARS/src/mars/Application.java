@@ -7,6 +7,9 @@ package mars;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
 
 /**
  *
@@ -15,6 +18,7 @@ import java.io.IOException;
 public class Application extends javax.swing.JFrame {
 
     private Model model = new Model();
+    private String fileToReadFrom;
     
     /**
      * Creates new form Application
@@ -35,8 +39,8 @@ public class Application extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         readFile = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        inputMaxTermDepth = new javax.swing.JTextField();
+        inputMaxTerms = new javax.swing.JTextField();
         jSlider1 = new javax.swing.JSlider();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -57,11 +61,34 @@ public class Application extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.setText("Maximum Term Depth");
+        inputMaxTermDepth.setText("Maximum Term Depth");
+        inputMaxTermDepth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputMaxTermDepthActionPerformed(evt);
+            }
+        });
 
-        jTextField2.setText("Maximum Terms");
+        inputMaxTerms.setText("Maximum Terms");
+        inputMaxTerms.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                inputMaxTermsCaretUpdate(evt);
+            }
+        });
+        inputMaxTerms.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputMaxTermsActionPerformed(evt);
+            }
+        });
 
         jSlider1.setMaximum(1);
+        jSlider1.setMinorTickSpacing(1);
+        jSlider1.setSnapToTicks(true);
+        jSlider1.setToolTipText("");
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider1StateChanged(evt);
+            }
+        });
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("hour.csv");
@@ -76,7 +103,7 @@ public class Application extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2)
+                    .addComponent(inputMaxTerms)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -86,7 +113,7 @@ public class Application extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(readFile, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(inputMaxTermDepth, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -94,9 +121,9 @@ public class Application extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(inputMaxTerms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(inputMaxTermDepth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -172,9 +199,30 @@ public class Application extends javax.swing.JFrame {
 
     private void readFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readFileActionPerformed
         try{
-        model.setFileToReadDataFrom("hour.csv");
+        model.setFileToReadDataFrom(fileToReadFrom);
         } catch(FileNotFoundException e){} catch(IOException e){}
+        ArrayList formula;
+        formula = model.getFormula();
+        jLabel2.setText(formula.toString());
     }//GEN-LAST:event_readFileActionPerformed
+
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+        this.fileToReadFrom = ((JSlider)(evt.getSource())).getValue() == 0 ? "day.csv" : "hour.csv";
+    }//GEN-LAST:event_jSlider1StateChanged
+
+    private void inputMaxTermsCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_inputMaxTermsCaretUpdate
+
+    }//GEN-LAST:event_inputMaxTermsCaretUpdate
+
+    private void inputMaxTermsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputMaxTermsActionPerformed
+        model.setMaxTerms(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
+        System.out.println(model.getMaxTerms());// TODO add your handling code here:
+    }//GEN-LAST:event_inputMaxTermsActionPerformed
+
+    private void inputMaxTermDepthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputMaxTermDepthActionPerformed
+        model.setMaxTermDepth(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
+        System.out.println(model.getMaxTermDepth());
+    }//GEN-LAST:event_inputMaxTermDepthActionPerformed
 
     /**
      * @param args the command line arguments
@@ -213,6 +261,8 @@ public class Application extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField inputMaxTermDepth;
+    private javax.swing.JTextField inputMaxTerms;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -221,8 +271,6 @@ public class Application extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JSlider jSlider1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JButton readFile;
     // End of variables declaration//GEN-END:variables
 }

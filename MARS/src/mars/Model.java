@@ -135,28 +135,33 @@ public class Model {
     
     private void RemoveTerms(){
         double testGCV = 0;
+        boolean keepRunning = true;
         MARSTerm removed = new MARSTerm(0, dataNames);
-        while(testGCV < GCV){
+        while(keepRunning){
             removed = RemoveTerm();
             testGCV = ComputeGCV(Formula);
+            if(testGCV < GCV)
+                GCV = testGCV;
+            else
+                keepRunning = false;
         }
         if(removed.Coëff != 0)
             Formula.add(removed);
     }
     
     private MARSTerm RemoveTerm (){
-        ArrayList<MARSTerm> testFormula = (ArrayList<MARSTerm>)Formula.clone();
+        ArrayList<MARSTerm> testFormula = new ArrayList<>();
         MARSTerm removed = new MARSTerm(0, dataNames);
         double RSSdiff = RSS;
         for(int i = 1; i < Formula.size(); i++){
-            MARSTerm remTest = testFormula.get(i);
-            testFormula.remove(i);
+            copy(Formula, testFormula);
+            MARSTerm remTest = testFormula.remove(i);
             double testRSS = ComputeRSS(testFormula);
             if(Math.abs(RSS - testRSS) < RSSdiff){
                 RSSdiff = Math.abs(RSS - testRSS);
                 removed = remTest;
             }
-            testFormula.add(i,remTest);
+            System.out.println(remTest.toString());
         }
         if(Formula.remove(removed))
             return removed;

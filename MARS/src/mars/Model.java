@@ -168,9 +168,6 @@ public class Model {
     
     private void GetIntercept(){
         double ic = 0;
-        //Collection<List<Double>> v = InstanceValues.values();
-        //System.out.println(InstanceValues.toString());
-        
         for(List<Double> instance : InstanceValues.values()){
             try{
                 ic += instance.get(INDEX_RESPONSE);
@@ -184,20 +181,22 @@ public class Model {
     }
     
     private void FindNextPair(){
+        ArrayList<MARSTerm> form = new ArrayList<>();
+        copy(Formula, form);
         ArrayList<MARSTerm> best = new ArrayList<>();
         Iterator<List<Double>> it = InstanceValues.values().iterator();
         for(MARSTerm parent : Formula){
+            System.out.println(parent.toString());
             for(int i = 0; i < VARIABLE_COUNT && parent.Knot.size() < MaxTermDepth; i++){
                 while(it.hasNext()){
                     List<Double> instance = it.next();
-                    double x = TryHingePair(parent, instance, i);
+                    double x = TryHingePair(parent, instance, i, form);
                     if(x < RSS){
                         RSS = x;
-                        best = (ArrayList<MARSTerm>)Formula.clone();
+                        copy(form, best);
                     }
-                    System.out.println(parent.toString());
-                    Formula.remove(Formula.size()-1);
-                    Formula.remove(Formula.size()-1);
+                    form.remove(form.size()-1);
+                    form.remove(form.size()-1);
                 }
             }
         }
@@ -205,10 +204,10 @@ public class Model {
         {
             System.out.println(mars.toString());
         }
-        Formula = (ArrayList<MARSTerm>)best.clone();
+        copy(best, Formula);
     }
     
-    private double TryHingePair(MARSTerm parent, List<Double> instance, int xrow){
+    private double TryHingePair(MARSTerm parent, List<Double> instance, int xrow, ArrayList<MARSTerm> form){
         double knot = instance.get(xrow);
         
         MARSTerm new1 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, false), dataNames);
@@ -218,7 +217,7 @@ public class Model {
         new1.Knot.add(knot);
         CopyList(parent.VarRow, new1.VarRow);
         new1.VarRow.add(xrow);
-        Formula.add(new1);
+        form.add(new1);
         
         MARSTerm new2 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, true), dataNames);
         CopyList(parent.NegHinge, new2.NegHinge);
@@ -227,7 +226,7 @@ public class Model {
         new2.Knot.add(knot);
         CopyList(parent.VarRow, new2.VarRow);
         new2.VarRow.add(xrow);
-        Formula.add(new2);
+        form.add(new2);
         
         return ComputeRSS(Formula);
     }
@@ -289,5 +288,11 @@ public class Model {
             result += numbers.get(i)*Math.pow(10, dot - i - 1);
         }
         return negative ? -result : result;
+    }
+    
+    private void copy(ArrayList<MARSTerm> one, ArrayList<MARSTerm> two){
+        for(MARSTerm term : one){
+            two.add(term);
+        }
     }
 }

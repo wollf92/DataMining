@@ -191,7 +191,7 @@ public class Model {
         ArrayList<MARSTerm> best = new ArrayList<>();
         Iterator<List<Double>> it;
         for(MARSTerm parent : Formula){
-            System.out.println(parent.toString());
+            //System.out.println(parent.toString());
             for(int i = 0; i < VARIABLE_COUNT && parent.Knot.size() < MaxTermDepth; i++){
                 it = InstanceValues.values().iterator();
                 while(it.hasNext()){
@@ -200,9 +200,6 @@ public class Model {
                     if(x < RSS){
                         RSS = x;
                         copy(form, best);
-                    }
-                    for(MARSTerm term : form){
-                        System.out.println(term.toString());
                     }
                     form.remove(form.size()-1);
                     form.remove(form.size()-1);

@@ -195,6 +195,9 @@ public class Model {
                         RSS = x;
                         copy(form, best);
                     }
+                    for(MARSTerm term : form){
+                        System.out.println(term.toString());
+                    }
                     form.remove(form.size()-1);
                     form.remove(form.size()-1);
                 }

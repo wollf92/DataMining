@@ -74,7 +74,7 @@ public class Model {
             }
         }    
         printData();
-        System.out.println(getDataFromDate("2011-04-15 5"));
+        System.out.println(getDataFromDate("2011-04-15-5"));
     }
     
     public List<Double> getDataFromDate(String date)
@@ -164,6 +164,8 @@ public class Model {
     
     private void GetIntercept(){
         double ic = 0;
+        //Collection<List<Double>> v = InstanceValues.values();
+        System.out.println(InstanceValues.toString());
         for(List<Double> instance : InstanceValues.values()){
             ic += instance.get(INDEX_RESPONSE);
         }

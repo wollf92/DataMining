@@ -28,6 +28,7 @@ public class Model {
     private HashMap<String, List<Double>> InstanceValues;
     private int MaxTerms;
     private int MaxTermDepth;
+    private String[] dataNames;
     
     private static final int VARIABLE_COUNT = 14;
     private static final int INDEX_RESPONSE = 14;
@@ -60,6 +61,7 @@ public class Model {
         BufferedReader br;
         br = new BufferedReader(new FileReader("src/mars/" + text + ".csv"));
         InstanceValues = new HashMap<>();
+        dataNames = br.readLine().split(",");
         while((line = br.readLine()) != null)
         {
             String[] perValue = line.split(",");
@@ -73,8 +75,8 @@ public class Model {
                 } catch (NumberFormatException e) {}
             }
         }    
-        printData();
-        System.out.println(getDataFromDate("2011-04-15-5"));
+        //printData();
+        //System.out.println(getDataFromDate("2011-04-15-5"));
     }
     
     public List<Double> getDataFromDate(String date)
@@ -105,8 +107,10 @@ public class Model {
         Iterator<List<Double>> it = InstanceValues.values().iterator();
         double sum = 0;
         for(List<Double> instance : InstanceValues.values()){
-            double residu = ComputeValue(form, instance) - instance.get(INDEX_RESPONSE);
-            sum += residu * residu;
+            try{
+                double residu = ComputeValue(form, instance) - instance.get(INDEX_RESPONSE);
+                sum += residu * residu;
+            } catch(IndexOutOfBoundsException e){System.out.println(instance.toString());}
         }
         sum = sum/(double)InstanceValues.size();
         return sum;
@@ -165,9 +169,15 @@ public class Model {
     private void GetIntercept(){
         double ic = 0;
         //Collection<List<Double>> v = InstanceValues.values();
-        System.out.println(InstanceValues.toString());
+        //System.out.println(InstanceValues.toString());
+        
         for(List<Double> instance : InstanceValues.values()){
-            ic += instance.get(INDEX_RESPONSE);
+            try{
+                ic += instance.get(INDEX_RESPONSE);
+            } catch (IndexOutOfBoundsException e)
+                {
+                    System.out.println(instance.toString());
+                }
         }
         ic = ic/(double)InstanceValues.size();
         Formula.add(new MARSTerm(ic));

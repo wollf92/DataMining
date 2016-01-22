@@ -61,7 +61,12 @@ public class Model {
         BufferedReader br;
         br = new BufferedReader(new FileReader("src/mars/" + text + ".csv"));
         InstanceValues = new HashMap<>();
-        dataNames = br.readLine().split(",");
+        String s = br.readLine();
+        int index1 = 1 + s.indexOf(',');
+        s = s.substring(index1);
+        int index2 = 1 + s.indexOf(',');
+        s = s.substring(index2);
+        dataNames = s.split(",");
         while((line = br.readLine()) != null)
         {
             String[] perValue = line.split(",");

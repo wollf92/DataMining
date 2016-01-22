@@ -205,8 +205,8 @@ public class Application extends javax.swing.JFrame {
         model.CalculateFormula();
         ArrayList formula;
         formula = model.getFormula();
-        System.out.println(formula.size());
-        System.out.println(formula.get(0).toString());
+        System.out.println(formula.toString());
+        jLabel2.setText(formula.toString());
     }//GEN-LAST:event_readFileActionPerformed
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged

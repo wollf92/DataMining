@@ -298,6 +298,7 @@ public class Model {
     }
     
     private void copy(ArrayList<MARSTerm> one, ArrayList<MARSTerm> two){
+        two.clear();
         for(MARSTerm term : one){
             two.add(term);
         }

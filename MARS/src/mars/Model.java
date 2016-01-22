@@ -22,18 +22,37 @@ import java.util.Map.Entry;
  */
 public class Model {
     
-    private final String[] XAXISNAMES = {""};
-    private final double[][] XAXIS = {{}};
-    private final double[] YAXIS = {};
     private ArrayList<MARSTerm> Formula = new ArrayList<>();
     private double RSS;
     private double GCV;
     private HashMap<String, List<Double>> InstanceValues;
+    private int MaxTerms;
+    private int MaxTermDepth;
     
     private static final int VARIABLE_COUNT = 14;
     private static final int INDEX_RESPONSE = 14;
     
     public Model(){
+    }
+    
+    public ArrayList<MARSTerm> getFormula(){
+        return Formula;
+    }
+    
+    public void setMaxTerms(int t){
+        MaxTerms = t;
+    }
+    
+    public int getMaxTerms(){
+        return MaxTerms;
+    }
+    
+    public void setMaxTermDepth(int td){
+        MaxTermDepth = td;
+    }
+    
+    public int getMaxTermDepth(){
+        return MaxTermDepth;
     }
     
     public void setFileToReadDataFrom(String text) throws FileNotFoundException, IOException {
@@ -130,11 +149,11 @@ public class Model {
         return new MARSTerm(0);
     }
     
-    public ArrayList<MARSTerm> ForwardPass(int maxTerms, int maxTermDepth){
+    public ArrayList<MARSTerm> ForwardPass(){
         GetIntercept();
         RSS = ComputeRSS(Formula);
-        while(Formula.size() < maxTerms){
-            FindNextPair(maxTermDepth);
+        while(Formula.size() < MaxTerms){
+            FindNextPair();
         }
         return Formula;
     }
@@ -148,11 +167,11 @@ public class Model {
         Formula.add(new MARSTerm(ic));
     }
     
-    private void FindNextPair(int maxTermDepth){
+    private void FindNextPair(){
         ArrayList<MARSTerm> best = new ArrayList<>();
         Iterator<List<Double>> it = InstanceValues.values().iterator();
         for(MARSTerm parent : Formula){
-            for(int i = 0; i < VARIABLE_COUNT && parent.Knot.size() < maxTermDepth; i++){
+            for(int i = 0; i < VARIABLE_COUNT && parent.Knot.size() < MaxTermDepth; i++){
                 while(it.hasNext()){
                     List<Double> instance = it.next();
                     double x = TryHingePair(parent, instance, i);

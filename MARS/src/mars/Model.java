@@ -79,7 +79,7 @@ public class Model {
                 } catch (NumberFormatException e) {}
             }
         }    
-        printData();
+        //printData();
         //System.out.println(getDataFromDate("2011-04-15-5"));
     }
     
@@ -224,7 +224,7 @@ public class Model {
     private double TryHingePair(MARSTerm parent, List<Double> instance, int xrow, ArrayList<MARSTerm> form){
         double knot = instance.get(xrow);
         
-        MARSTerm new1 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, false), dataNames);
+        MARSTerm new1 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, false, parent), dataNames);
         CopyList(parent.NegHinge, new1.NegHinge);
         new1.NegHinge.add(false);
         CopyList(parent.Knot, new1.Knot);
@@ -233,7 +233,7 @@ public class Model {
         new1.VarRow.add(xrow);
         form.add(new1);
         
-        MARSTerm new2 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, true), dataNames);
+        MARSTerm new2 = new MARSTerm(ComputeCoëff(Formula.get(0).Coëff, knot, xrow, true, parent), dataNames);
         CopyList(parent.NegHinge, new2.NegHinge);
         new2.NegHinge.add(true);
         CopyList(parent.Knot, new2.Knot);
@@ -245,17 +245,23 @@ public class Model {
         return ComputeRSS(form);
     }
     
-    private double ComputeCoëff(double y, double x, int xrow, boolean neg){
+    private double ComputeCoëff(double y, double x, int xrow, boolean neg, MARSTerm parent){
         double lower = 0;
         double upper = 0;
         int instAmt = InstanceValues.size();
         for(List<Double> inst : InstanceValues.values()){
-            double a;
+            double a = 1;
             double b;
             if(neg)
-                a = x - inst.get(xrow);
+                a *= (x - inst.get(xrow));
             else
-                a = inst.get(xrow) - x;
+                a *= (inst.get(xrow) - x);
+            for(int i = 0; i < parent.NegHinge.size(); i++){
+                if(parent.NegHinge.get(i))
+                    a *= (parent.Knot.get(i) - inst.get(parent.VarRow.get(i)));
+                else
+                    a *= (inst.get(parent.VarRow.get(i)) - parent.Knot.get(i));
+            }
             b = inst.get(INDEX_RESPONSE) - y;
             upper += a*b;
             lower += a*a;

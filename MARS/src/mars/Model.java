@@ -72,15 +72,14 @@ public class Model {
             String[] perValue = line.split(",");
             String date = perValue[1] + "-" + perValue[5];
             InstanceValues.put(date, new ArrayList<Double>());
-            InstanceValues.get(date).add((double)perValue[0].length());
-            for(int i = 2; i <= 15; i++)
+            for(int i = 2; i <= 16; i++)
             {
                 try{
                     InstanceValues.get(date).add(Double.parseDouble(perValue[i]));
                 } catch (NumberFormatException e) {}
             }
         }    
-        //printData();
+        printData();
         //System.out.println(getDataFromDate("2011-04-15-5"));
     }
     
@@ -157,11 +156,10 @@ public class Model {
             copy(Formula, testFormula);
             MARSTerm remTest = testFormula.remove(i);
             double testRSS = ComputeRSS(testFormula);
-            if(Math.abs(RSS - testRSS) < RSSdiff){
+            if(Math.abs(RSS - testRSS) < RSSdiff && RSSdiff > 0.5){
                 RSSdiff = Math.abs(RSS - testRSS);
                 removed = remTest;
             }
-            System.out.println(remTest.toString());
         }
         if(Formula.remove(removed))
             return removed;
@@ -171,8 +169,9 @@ public class Model {
     public void ForwardPass(){
         GetIntercept();
         RSS = ComputeRSS(Formula);
-        while(Formula.size() < MaxTerms){
-            FindNextPair();
+        boolean morePairs = true;
+        while(Formula.size() < MaxTerms && morePairs){
+            morePairs = FindNextPair();
         }
     }
     
@@ -190,20 +189,21 @@ public class Model {
         Formula.add(new MARSTerm(ic, dataNames));
     }
     
-    private void FindNextPair(){
+    private boolean FindNextPair(){
         ArrayList<MARSTerm> form = new ArrayList<>();
         copy(Formula, form);
         ArrayList<MARSTerm> best = new ArrayList<>();
         Iterator<List<Double>> it;
+        boolean rssChanged = false;
         for(MARSTerm parent : Formula){
-            //System.out.println(parent.toString());
             for(int i = 0; i < VARIABLE_COUNT && parent.Knot.size() < MaxTermDepth; i++){
                 it = InstanceValues.values().iterator();
                 while(it.hasNext()){
                     List<Double> instance = it.next();
                     double x = TryHingePair(parent, instance, i, form);
-                    if(x < RSS){
+                    if(x < RSS && Math.abs(x - RSS) > 0.05){
                         RSS = x;
+                        rssChanged = true;
                         copy(form, best);
                     }
                     form.remove(form.size()-1);
@@ -215,7 +215,10 @@ public class Model {
         {
             System.out.println(mars.toString());
         }
-        copy(best, Formula);
+        if(rssChanged){
+            copy(best, Formula);
+        }
+        return rssChanged;
     }
     
     private double TryHingePair(MARSTerm parent, List<Double> instance, int xrow, ArrayList<MARSTerm> form){

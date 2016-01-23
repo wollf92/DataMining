@@ -171,7 +171,7 @@
             <Component class="javax.swing.JLabel" name="jLabel4">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="text" type="java.lang.String" value="day.csv"/>
+                <Property name="text" type="java.lang.String" value="shortList.csv"/>
               </Properties>
             </Component>
           </SubComponents>

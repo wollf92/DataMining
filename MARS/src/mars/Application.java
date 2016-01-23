@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 public class Application extends javax.swing.JFrame {
 
     private Model model = new Model();
-    private String fileToReadFrom = "day";
+    private String fileToReadFrom = "shortList";
     
     /**
      * Creates new form Application
@@ -50,7 +50,7 @@ public class Application extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Data Mining", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Data Mining", 2, 0));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
 
@@ -94,7 +94,7 @@ public class Application extends javax.swing.JFrame {
         jLabel3.setText("hour.csv");
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel4.setText("day.csv");
+        jLabel4.setText("shortList.csv");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

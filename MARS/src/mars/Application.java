@@ -25,6 +25,7 @@ public class Application extends javax.swing.JFrame {
      */
     public Application() {
         initComponents();
+        fileToReadFrom = jSlider1.getValue() == 0 ? "hour" : "shortList";
     }
 
     /**
@@ -50,7 +51,7 @@ public class Application extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Data Mining", 2, 0));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Data Mining", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
 
@@ -67,6 +68,16 @@ public class Application extends javax.swing.JFrame {
                 inputMaxTermDepthActionPerformed(evt);
             }
         });
+        inputMaxTermDepth.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                inputMaxTermDepthPropertyChange(evt);
+            }
+        });
+        inputMaxTermDepth.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                inputMaxTermDepthKeyReleased(evt);
+            }
+        });
 
         inputMaxTerms.setText("Maximum Terms");
         inputMaxTerms.addCaretListener(new javax.swing.event.CaretListener() {
@@ -77,6 +88,16 @@ public class Application extends javax.swing.JFrame {
         inputMaxTerms.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputMaxTermsActionPerformed(evt);
+            }
+        });
+        inputMaxTerms.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                inputMaxTermsPropertyChange(evt);
+            }
+        });
+        inputMaxTerms.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                inputMaxTermsKeyReleased(evt);
             }
         });
 
@@ -218,14 +239,46 @@ public class Application extends javax.swing.JFrame {
     }//GEN-LAST:event_inputMaxTermsCaretUpdate
 
     private void inputMaxTermsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputMaxTermsActionPerformed
-        model.setMaxTerms(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
-        System.out.println(model.getMaxTerms());// TODO add your handling code here:
+        try{
+            model.setMaxTerms(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
+        } catch (NumberFormatException e){};
+        System.out.println(model.getMaxTerms());
     }//GEN-LAST:event_inputMaxTermsActionPerformed
 
     private void inputMaxTermDepthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputMaxTermDepthActionPerformed
+        try{
         model.setMaxTermDepth(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
+        } catch (NumberFormatException e){};
         System.out.println(model.getMaxTermDepth());
     }//GEN-LAST:event_inputMaxTermDepthActionPerformed
+
+    private void inputMaxTermsPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_inputMaxTermsPropertyChange
+        try{
+        model.setMaxTerms(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
+        } catch (NumberFormatException e){};
+        System.out.println(model.getMaxTerms());
+    }//GEN-LAST:event_inputMaxTermsPropertyChange
+
+    private void inputMaxTermDepthPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_inputMaxTermDepthPropertyChange
+        try{
+        model.setMaxTermDepth(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
+        } catch (NumberFormatException e){};
+        System.out.println(model.getMaxTermDepth());
+    }//GEN-LAST:event_inputMaxTermDepthPropertyChange
+
+    private void inputMaxTermsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputMaxTermsKeyReleased
+        try{
+        model.setMaxTerms(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
+        } catch (NumberFormatException e){};
+        System.out.println(model.getMaxTerms());
+    }//GEN-LAST:event_inputMaxTermsKeyReleased
+
+    private void inputMaxTermDepthKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputMaxTermDepthKeyReleased
+        try{
+        model.setMaxTermDepth(Integer.parseInt(((JTextField)(evt.getSource())).getText()));
+        } catch (NumberFormatException e){};
+        System.out.println(model.getMaxTermDepth());
+    }//GEN-LAST:event_inputMaxTermDepthKeyReleased
 
     /**
      * @param args the command line arguments
